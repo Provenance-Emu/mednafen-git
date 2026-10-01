@@ -379,7 +379,8 @@ static void RebaseTS(const pscpu_timestamp_t timestamp)
   events[i].event_time -= timestamp;
  }
 
- CPU->SetEventNT(events[PSX_EVENT__SYNFIRST].next->event_time);
+ if(CPU)
+  CPU->SetEventNT(events[PSX_EVENT__SYNFIRST].next->event_time);
 }
 
 void PSX_SetEventNT(const int type, const pscpu_timestamp_t next_timestamp)
@@ -430,14 +431,16 @@ void PSX_SetEventNT(const int type, const pscpu_timestamp_t next_timestamp)
   e->event_time = next_timestamp;
  }
 
- CPU->SetEventNT(events[PSX_EVENT__SYNFIRST].next->event_time & Running);
+ if(CPU)
+  CPU->SetEventNT(events[PSX_EVENT__SYNFIRST].next->event_time & Running);
 }
 
 // Called from debug.cpp too.
 void ForceEventUpdates(const pscpu_timestamp_t timestamp)
 {
  PSX_SetEventNT(PSX_EVENT_GPU, GPU_Update(timestamp));
- PSX_SetEventNT(PSX_EVENT_CDC, CDC->Update(timestamp));
+ if(CDC)
+  PSX_SetEventNT(PSX_EVENT_CDC, CDC->Update(timestamp));
 
  PSX_SetEventNT(PSX_EVENT_TIMER, TIMER_Update(timestamp));
 
@@ -445,7 +448,8 @@ void ForceEventUpdates(const pscpu_timestamp_t timestamp)
 
  PSX_SetEventNT(PSX_EVENT_FIO, FIO->Update(timestamp));
 
- CPU->SetEventNT(events[PSX_EVENT__SYNFIRST].next->event_time);
+ if(CPU)
+  CPU->SetEventNT(events[PSX_EVENT__SYNFIRST].next->event_time);
 }
 
 bool MDFN_FASTCALL PSX_EventHandler(const pscpu_timestamp_t timestamp)
@@ -466,7 +470,10 @@ bool MDFN_FASTCALL PSX_EventHandler(const pscpu_timestamp_t timestamp)
 	break;
 
    case PSX_EVENT_CDC:
-	nt = CDC->Update(e->event_time);
+	if(CDC)
+	 nt = CDC->Update(e->event_time);
+	else
+	 nt = e->event_time + 0x7FFFFFFF;
 	break;
 
    case PSX_EVENT_TIMER:

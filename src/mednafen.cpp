@@ -1404,11 +1404,12 @@ MDFNGI *MDFNI_LoadGame(const char *force_module, VirtualFS* vfs, const char* pat
  }
  catch(std::exception &e)
  {
+  printf("MDFNI_LoadGame: Error: %s\n", e.what());
   MDFN_Notify(MDFN_NOTICE_ERROR, "%s", e.what());
 
   Cleanup();
 
-  return NULL;
+  throw e;
  }
 
  return MDFNGameInfo;

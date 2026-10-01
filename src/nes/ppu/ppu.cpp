@@ -913,7 +913,7 @@ static void DoLine(MDFN_Surface *surface, int skip)
 
   if(NTSCBlitter)
   {
-   if(!skip)
+   if(!skip && surface && surface->pixels)
    {
     // TODO:  Factor this out/make it more elegant.
     switch(surface->format.opp)
@@ -939,7 +939,7 @@ static void DoLine(MDFN_Surface *surface, int skip)
   }
   else
   {
-   if(!skip) 
+   if(!skip && surface && surface->pixels)
    {
     switch(surface->format.opp)
     {
@@ -949,7 +949,11 @@ static void DoLine(MDFN_Surface *surface, int skip)
          uint32 *real_target = surface->pixels + scanline * surface->pitchinpix;
 
          for(int x = 0; x < 256; x++)
-          real_target[x] = CM.PALRAMLUTCache[(target[x] & 0x3F) | (emphlinebuf[x] << 6)];
+         {
+          int idx = (target[x] & 0x3F) | ((emphlinebuf[x] & 0x7) << 6);
+          if(idx < 0x200)
+           real_target[x] = CM.PALRAMLUTCache[idx];
+         }
 	}
 	break;
 
@@ -958,7 +962,11 @@ static void DoLine(MDFN_Surface *surface, int skip)
 	 uint16 *real_target16 = surface->pixels16 + scanline * surface->pitchinpix;
 
          for(int x = 0; x < 256; x++)
-          real_target16[x] = CM.PALRAMLUTCache[(target[x] & 0x3F) | (emphlinebuf[x] << 6)];
+         {
+          int idx = (target[x] & 0x3F) | ((emphlinebuf[x] & 0x7) << 6);
+          if(idx < 0x200)
+           real_target16[x] = CM.PALRAMLUTCache[idx];
+         }
 	}
 	break;
 
@@ -967,7 +975,11 @@ static void DoLine(MDFN_Surface *surface, int skip)
 	 uint8 *real_target8 = surface->pixels8 + scanline * surface->pitchinpix;
 
          for(int x = 0; x < 256; x++)
-          real_target8[x] = CM.PALRAMLUTCache8[(target[x] & 0x3F) | (emphlinebuf[x] << 6)];
+         {
+          int idx = (target[x] & 0x3F) | ((emphlinebuf[x] & 0x7) << 6);
+          if(idx < 0x200)
+           real_target8[x] = CM.PALRAMLUTCache8[idx];
+         }
 	}
 	break;
     }
@@ -1237,12 +1249,12 @@ int MDFNPPU_Loop(EmulateSpecStruct *espec)
  MDFN_Surface* surface = espec->surface;
  int skip = espec->skip;
 
-  if(!skip && surface->palette)
+  if(!skip && surface && surface->palette)
    memcpy(surface->palette, CM.NESPalette8BPP, sizeof(CM.NESPalette8BPP));
 
   if(ppudead) /* Needed for Knight Rider, Time Lord, possibly others. */
   {
-   if(!skip)
+   if(!skip && surface)
    {
     surface->Fill(0, 0, 0, 0);
     for(int y = 0; y < 240; y++)

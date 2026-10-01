@@ -319,7 +319,7 @@ void SMPC_SetInput(unsigned port, const char* type, uint8* ptr)
  {
   MiscInputPtr = ptr;
   return;
- }
+  }
  //
  //
  //

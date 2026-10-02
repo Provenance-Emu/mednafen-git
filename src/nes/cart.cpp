@@ -910,3 +910,46 @@ void MDFN_LoadGameSave(CartInfo *LocalHWInfo)
 }
 
 }
+
+// ---- Provenance RetroAchievements RAM accessors ----
+//
+// Cartridge RAM mapped at CPU $6000-$7FFF (rcheevos NES "Cartridge RAM").
+// Board code maps its WRAM there with setprg*r(), which flags each 2 KiB page
+// in PRGIsRAM[]. Returns the host pointer for $6000 and the contiguous
+// RAM-backed byte count (8 KiB max); NULL/0 when the board maps no RAM there.
+// PRGIsRAM is not cleared by ResetCartMapping(), so unmapped pages
+// (Page[] == nothing/NULL) are rejected explicitly.
+namespace MDFN_IEN_NES
+{
+static uint8 *ProvenanceCartRAM(size_t *size)
+{
+ static const unsigned first_page = 0x6000 >> 11;
+ static const unsigned end_page = 0x8000 >> 11;
+
+ *size = 0;
+
+ if(!Page[first_page] || Page[first_page] == (nothing - (first_page << 11)) || !PRGIsRAM[first_page])
+  return NULL;
+
+ uint8 *base = Page[first_page] + (first_page << 11);
+ unsigned page = first_page;
+
+ for(; page < end_page; page++)
+ {
+  if(!Page[page] || Page[page] == (nothing - (page << 11)) || !PRGIsRAM[page])
+   break;
+
+  // A WRAM chip smaller than the window repeats; stop at the first wrap.
+  if(Page[page] + (page << 11) != base + ((page - first_page) << 11))
+   break;
+ }
+
+ *size = (page - first_page) << 11;
+ return *size ? base : NULL;
+}
+}
+
+extern "C" {
+    uint8_t* mdfn_nes_cartram_ptr(void) { size_t size; return MDFN_IEN_NES::ProvenanceCartRAM(&size); }
+    size_t   mdfn_nes_cartram_size(void) { size_t size; MDFN_IEN_NES::ProvenanceCartRAM(&size); return size; }
+}

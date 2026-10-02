@@ -1847,3 +1847,12 @@ static void DoGfxDecode(void)
 }
 
 }
+
+// ---- Provenance RetroAchievements RAM accessors ----
+//
+// PPU[4]: $2000 PPUCTRL, $2001 PPUMASK, $2002 PPUSTATUS, $2003 OAMADDR. The
+// remaining register mirrors have no backing storage in Mednafen.
+extern "C" {
+    uint8_t* mdfn_nes_ppu_regs_ptr(void) { return MDFN_IEN_NES::PPU; }
+    size_t   mdfn_nes_ppu_regs_size(void) { return sizeof(MDFN_IEN_NES::PPU); }
+}

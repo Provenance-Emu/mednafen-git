@@ -501,3 +501,9 @@ static const CustomPalette_Spec CPInfo[] =
  2,     // Number of output sound channels
 };
 
+// ---- Provenance RetroAchievements RAM accessors ----
+extern "C" {
+    uint8_t* mdfn_lynx_ram_ptr(void) { return lynxie ? lynxie->GetRamPointer() : NULL; }
+    size_t   mdfn_lynx_ram_size(void) { return lynxie ? RAM_SIZE : 0; }
+}
+

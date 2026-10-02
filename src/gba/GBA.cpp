@@ -3393,3 +3393,16 @@ using namespace MDFN_IEN_GBA;
  2,	// Number of output sound channels
 };
 
+// ---- Provenance RetroAchievements RAM accessors ----
+//
+// All three buffers are allocated at load and freed at close.  flashSaveMemory
+// backs both SRAM saves (first 64 KiB) and 128 KiB flash saves.
+extern "C" {
+    uint8_t* mdfn_gba_iwram_ptr(void) { return MDFN_IEN_GBA::internalRAM; }
+    size_t   mdfn_gba_iwram_size(void) { return MDFN_IEN_GBA::internalRAM ? 0x8000 : 0; }
+    uint8_t* mdfn_gba_ewram_ptr(void) { return MDFN_IEN_GBA::workRAM; }
+    size_t   mdfn_gba_ewram_size(void) { return MDFN_IEN_GBA::workRAM ? 0x40000 : 0; }
+    uint8_t* mdfn_gba_saveram_ptr(void) { return MDFN_IEN_GBA::flashSaveMemory; }
+    size_t   mdfn_gba_saveram_size(void) { return MDFN_IEN_GBA::flashSaveMemory ? 0x20000 : 0; }
+}
+

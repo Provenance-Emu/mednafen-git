@@ -1207,3 +1207,16 @@ using namespace MDFN_IEN_PCFX;
  2,     // Number of output sound channels
 };
 
+// ---- Provenance RetroAchievements RAM accessors ----
+//
+// RAM is NULL until a game is loaded.  ExBackupRAM is 128 KiB, but rcheevos
+// only maps its first 32 KiB; the Swift bridge clamps the region.
+extern "C" {
+    uint8_t* mdfn_pcfx_ram_ptr(void) { return MDFN_IEN_PCFX::RAM; }
+    size_t   mdfn_pcfx_ram_size(void) { return MDFN_IEN_PCFX::RAM ? 0x200000 : 0; }
+    uint8_t* mdfn_pcfx_backupram_ptr(void) { return MDFN_IEN_PCFX::BackupRAM; }
+    size_t   mdfn_pcfx_backupram_size(void) { return sizeof(MDFN_IEN_PCFX::BackupRAM); }
+    uint8_t* mdfn_pcfx_exbackupram_ptr(void) { return MDFN_IEN_PCFX::ExBackupRAM; }
+    size_t   mdfn_pcfx_exbackupram_size(void) { return sizeof(MDFN_IEN_PCFX::ExBackupRAM); }
+}
+

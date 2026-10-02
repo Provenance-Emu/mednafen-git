@@ -1081,3 +1081,13 @@ using namespace MDFN_IEN_VB;
 
  2,     // Number of output sound channels
 };
+
+// ---- Provenance RetroAchievements RAM accessors ----
+//
+// WRAM and GPRAM come from the V810 fast map and are NULL until a game is loaded.
+extern "C" {
+    uint8_t* mdfn_vb_wram_ptr(void) { return MDFN_IEN_VB::WRAM; }
+    size_t   mdfn_vb_wram_size(void) { return MDFN_IEN_VB::WRAM ? 0x10000 : 0; }
+    uint8_t* mdfn_vb_gpram_ptr(void) { return MDFN_IEN_VB::GPRAM; }
+    size_t   mdfn_vb_gpram_size(void) { return MDFN_IEN_VB::GPRAM ? (size_t)MDFN_IEN_VB::GPRAM_Mask + 1 : 0; }
+}

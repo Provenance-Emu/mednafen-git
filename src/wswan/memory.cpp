@@ -894,3 +894,11 @@ void WSwan_MemoryStateAction(StateMem *sm, const unsigned load, const bool data_
 }
 
 }
+
+// ---- Provenance RetroAchievements RAM accessors ----
+extern "C" {
+    uint8_t* mdfn_wswan_ram_ptr(void) { return MDFN_IEN_WSWAN::wsRAM; }
+    size_t   mdfn_wswan_ram_size(void) { return sizeof(MDFN_IEN_WSWAN::wsRAM); }
+    uint8_t* mdfn_wswan_sram_ptr(void) { return MDFN_IEN_WSWAN::wsSRAM; }
+    size_t   mdfn_wswan_sram_size(void) { return MDFN_IEN_WSWAN::wsSRAM ? MDFN_IEN_WSWAN::sram_size : 0; }
+}

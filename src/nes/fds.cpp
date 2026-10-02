@@ -776,3 +776,12 @@ static MDFN_COLD void FDSPower(void)
 }
 
 }
+
+// ---- Provenance RetroAchievements RAM accessors ----
+//
+// FDSRAM is the 32 KiB of disk-system RAM at $6000-$DFFF; NULL unless an FDS
+// image is loaded.
+extern "C" {
+    uint8_t* mdfn_nes_fdsram_ptr(void) { return MDFN_IEN_NES::FDSRAM; }
+    size_t   mdfn_nes_fdsram_size(void) { return MDFN_IEN_NES::FDSRAM ? 32768 : 0; }
+}

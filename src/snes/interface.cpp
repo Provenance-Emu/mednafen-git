@@ -1404,4 +1404,12 @@ static const FileExtensionSpecStruct KnownExtensions[] =
  2,     // Number of output sound channels
 };
 
+// ---- Provenance RetroAchievements RAM accessors ----
+//
+// bsnes v0.59 (the accurate "snes" module) keeps WRAM in a static StaticRAM.
+extern "C" {
+    uint8_t* mdfn_snes_wram_ptr(void) { return bSNES_v059::memory::wram.data(); }
+    size_t   mdfn_snes_wram_size(void) { return bSNES_v059::memory::wram.size(); }
+}
+
 

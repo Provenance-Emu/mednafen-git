@@ -436,3 +436,9 @@ using namespace MDFN_IEN_NGP;
  2,     // Number of output sound channels
 };
 
+// ---- Provenance RetroAchievements RAM accessors ----
+extern "C" {
+    uint8_t* mdfn_ngp_ram_ptr(void) { return MDFN_IEN_NGP::CPUExRAM; }
+    size_t   mdfn_ngp_ram_size(void) { return sizeof(MDFN_IEN_NGP::CPUExRAM); }
+}
+

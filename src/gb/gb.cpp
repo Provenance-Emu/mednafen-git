@@ -2931,3 +2931,20 @@ using namespace MDFN_IEN_GB;
 
  2,     // Number of output sound channels
 };
+
+// ---- Provenance RetroAchievements RAM accessors ----
+//
+// gbWram is 0x2000 bytes in DMG mode and 0x8000 (banks 0-7) in CGB mode,
+// gbVram is 0x2000 (DMG) or 0x4000 (CGB, two banks), and gbRam is the whole
+// cartridge RAM (every bank; NULL when the cart has none).  All three are
+// allocated at load and freed at close.
+extern "C" {
+    uint8_t* mdfn_gb_wram_ptr(void) { return MDFN_IEN_GB::gbWram; }
+    size_t   mdfn_gb_wram_size(void) { return MDFN_IEN_GB::gbWram ? (MDFN_IEN_GB::gbCgbMode ? 0x8000 : 0x2000) : 0; }
+    uint8_t* mdfn_gb_vram_ptr(void) { return MDFN_IEN_GB::gbVram; }
+    size_t   mdfn_gb_vram_size(void) { return MDFN_IEN_GB::gbVram ? (MDFN_IEN_GB::gbCgbMode ? 0x4000 : 0x2000) : 0; }
+    uint8_t* mdfn_gb_cartram_ptr(void) { return MDFN_IEN_GB::gbRam; }
+    size_t   mdfn_gb_cartram_size(void) { return MDFN_IEN_GB::gbRam ? (size_t)MDFN_IEN_GB::gbRamSize : 0; }
+    uint8_t* mdfn_gb_hram_ptr(void) { return MDFN_IEN_GB::HRAM; }
+    size_t   mdfn_gb_hram_size(void) { return sizeof(MDFN_IEN_GB::HRAM); }
+}
